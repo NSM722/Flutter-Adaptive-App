@@ -33,8 +33,7 @@ class AuthedUserPlaylists extends ChangeNotifier {
     } while (nextPageToken != null);
   }
 
-  final String _flutterDevAccountId;
-  late final YouTubeApi _api;
+  late final YouTubeApi? _api;
 
   final List<Playlist> _playlists = [];
   List<Playlist> get playlists => UnmodifiableListView(_playlists);
@@ -51,7 +50,7 @@ class AuthedUserPlaylists extends ChangeNotifier {
   Future<void> _retrievePlaylist(String playlistId) async {
     String? nextPageToken;
     do {
-      var response = await _api.playlistItems.list(
+      var response = await _api!.playlistItems.list(
         ['snippet', 'contentDetails'],
         playlistId: playlistId,
         maxResults: 25,
@@ -64,22 +63,5 @@ class AuthedUserPlaylists extends ChangeNotifier {
       notifyListeners();
       nextPageToken = response.nextPageToken;
     } while (nextPageToken != null);
-  }
-}
-
-class _ApiKeyClient extends http.BaseClient {
-  _ApiKeyClient({required this.key, required this.client});
-
-  final String key;
-  final http.Client client;
-
-  @override
-  Future<http.StreamedResponse> send(http.BaseRequest request) {
-    final url = request.url.replace(queryParameters: <String, List<String>>{
-      ...request.url.queryParametersAll,
-      'key': [key]
-    });
-
-    return client.send(http.Request(request.method, url));
   }
 }
