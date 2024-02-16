@@ -1,121 +1,79 @@
-import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io';
+
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+import 'src/app_state.dart';
+import 'src/playlist_details.dart';
+import 'src/playlists.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// From https://www.youtube.com/channel/UCwXdFgeE9KYzlDdR7TG9cMw
+const flutterDevAccountId = 'UCwXdFgeE9KYzlDdR7TG9cMw';
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const ResizeablePage(),
-    );
-  }
-}
+// This is obtained by creating a new project from your gmail account
+// Enable the youtube data api v3, navigate to credentials and create
+// the API_KEY
+const youTubeApiKey = 'AIzaSyChzkg7GcxiodI74HqswUMeEGpPP7AFHuw';
 
-class ResizeablePage extends StatelessWidget {
-  const ResizeablePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final themePlatform = Theme.of(context).platform;
-
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Window properties',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 8),
-            SizedBox(
-              width: 350,
-              child: Table(
-                textBaseline: TextBaseline.alphabetic,
-                children: <TableRow>[
-                  _fillTableRow(
-                    context: context,
-                    property: 'Window Size',
-                    value: '${mediaQuery.size.width.toStringAsFixed(1)} x '
-                        '${mediaQuery.size.height.toStringAsFixed(1)}',
-                  ),
-                  _fillTableRow(
-                    context: context,
-                    property: 'Device Pixel Ratio',
-                    value: mediaQuery.devicePixelRatio.toStringAsFixed(2),
-                  ),
-                  _fillTableRow(
-                    context: context,
-                    property: 'Platform.isXXX',
-                    value: platformDescription(),
-                  ),
-                  _fillTableRow(
-                    context: context,
-                    property: 'Theme.of(ctx).platform',
-                    value: themePlatform.toString(),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  TableRow _fillTableRow(
-      {required BuildContext context,
-      required String property,
-      required String value}) {
-    return TableRow(
-      children: [
-        TableCell(
-          verticalAlignment: TableCellVerticalAlignment.baseline,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(property),
-          ),
-        ),
-        TableCell(
-          verticalAlignment: TableCellVerticalAlignment.baseline,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(value),
-          ),
+final _router = GoRouter(
+  routes: <RouteBase>[
+    GoRoute(
+      path: '/',
+      builder: (context, state) {
+        return const Playlists();
+      },
+      routes: <RouteBase>[
+        GoRoute(
+          path: 'playlist/:id',
+          builder: (context, state) {
+            final title = state.uri.queryParameters['title']!;
+            final id = state.pathParameters['id']!;
+            return PlaylistDetails(
+              playlistId: id,
+              playlistName: title,
+            );
+          },
         ),
       ],
-    );
+    ),
+  ],
+);
+
+void main() {
+  if (youTubeApiKey == 'AIzaNotAnApiKey') {
+    print('youTubeApiKey has not been configured.');
+    exit(1);
   }
 
-  String platformDescription() {
-    if (kIsWeb) {
-      return 'Web';
-    } else if (Platform.isAndroid) {
-      return 'Android';
-    } else if (Platform.isIOS) {
-      return 'iOS';
-    } else if (Platform.isWindows) {
-      return 'Windows';
-    } else if (Platform.isMacOS) {
-      return 'macOS';
-    } else if (Platform.isLinux) {
-      return 'Linux';
-    } else if (Platform.isFuchsia) {
-      return 'Fuchsia';
-    } else {
-      return 'Unknown';
-    }
+  runApp(ChangeNotifierProvider<FlutterDevPlaylists>(
+    create: (context) => FlutterDevPlaylists(
+      flutterDevAccountId: flutterDevAccountId,
+      youTubeApiKey: youTubeApiKey,
+    ),
+    child: const PlaylistsApp(),
+  ));
+}
+
+class PlaylistsApp extends StatelessWidget {
+  const PlaylistsApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      title: 'FlutterDev Playlists',
+      theme: FlexColorScheme.light(
+        scheme: FlexScheme.red,
+        useMaterial3: true,
+      ).toTheme,
+      darkTheme: FlexColorScheme.dark(
+        scheme: FlexScheme.red,
+        useMaterial3: true,
+      ).toTheme,
+      themeMode: ThemeMode.system, // Or ThemeMode.System if you'd prefer
+      debugShowCheckedModeBanner: false,
+      routerConfig: _router,
+    );
   }
 }
