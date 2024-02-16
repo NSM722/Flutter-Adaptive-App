@@ -1,4 +1,3 @@
-/// The app state object
 import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
@@ -6,12 +5,14 @@ import 'package:googleapis/youtube/v3.dart';
 import 'package:http/http.dart' as http;
 
 class AuthedUserPlaylists extends ChangeNotifier {
+  // Rename class
   set authClient(http.Client client) {
+    // Drop constructor, add setter
     _api = YouTubeApi(client);
     _loadPlaylists();
   }
 
-  bool get isLoggedIn => _api != null;
+  bool get isLoggedIn => _api != null; // Add property
 
   Future<void> _loadPlaylists() async {
     String? nextPageToken;
@@ -19,8 +20,9 @@ class AuthedUserPlaylists extends ChangeNotifier {
 
     do {
       final response = await _api!.playlists.list(
+        // Add ! to _api
         ['snippet', 'contentDetails', 'id'],
-        mine: true,
+        mine: true, // convert from channelId: to mine:
         maxResults: 50,
         pageToken: nextPageToken,
       );
@@ -33,7 +35,7 @@ class AuthedUserPlaylists extends ChangeNotifier {
     } while (nextPageToken != null);
   }
 
-  late final YouTubeApi? _api;
+  YouTubeApi? _api; // Convert to optional
 
   final List<Playlist> _playlists = [];
   List<Playlist> get playlists => UnmodifiableListView(_playlists);
@@ -51,6 +53,7 @@ class AuthedUserPlaylists extends ChangeNotifier {
     String? nextPageToken;
     do {
       var response = await _api!.playlistItems.list(
+        // Add ! to _api
         ['snippet', 'contentDetails'],
         playlistId: playlistId,
         maxResults: 25,
@@ -65,3 +68,5 @@ class AuthedUserPlaylists extends ChangeNotifier {
     } while (nextPageToken != null);
   }
 }
+
+// Delete the now unused _ApiKeyClient class

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -25,8 +23,8 @@ final scopes = [
 ];
 
 final clientId = ClientId(
-  '985668357426-320hg0grfdpgnjos1i70hlr5pqqu0k2p.apps.googleusercontent.com',
-  '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',
+  '985668357426-bic06prp6jfecgidhr2232pgun5n6e45.apps.googleusercontent.com',
+  'A6:64:D5:16:68:97:86:69:30:99:9B:88:B2:5D:BE:A9:17:62:98:52',
 );
 
 final _router = GoRouter(
