@@ -1,6 +1,6 @@
 /// The app state object
-
 import 'dart:collection';
+
 import 'package:flutter/foundation.dart';
 import 'package:googleapis/youtube/v3.dart';
 import 'package:http/http.dart' as http;
