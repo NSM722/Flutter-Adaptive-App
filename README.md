@@ -31,3 +31,9 @@ Add the following packages to gain access to the `Youtube Data Api`
 - `url_launcher`: Provides the means to jump into a video from a playlist. As shown from the resolved dependencies, url_launcher has implementations for Windows, macOS, Linux, and the web, in addition to the default Android and iOS. Using this package means you won't need to create platform specific for this functionality
 - `flex_color_scheme`: Gives the app a nice default color scheme. To learn more, check out the [flex_color_scheme API documentation](https://pub.dev/documentation/flex_color_scheme/latest/ 'read docs')
 - `go_router`: Implements navigation between the different screens. This package provides a convenient, url-based API for navigating using Flutter's Router
+
+### Google Authentication
+
+To authenticate on Windows, macOS, and Linux, use the `googleapis_auth package`. These desktop platforms authenticate via a web browser
+
+To authenticate on Android, iOS, and the web, use the `google_sign_in` and `extension_google_sign_in_as_googleapis_auth packages`. The second package acts as an interop shim between the two packages
