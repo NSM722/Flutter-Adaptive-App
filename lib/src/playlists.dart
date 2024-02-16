@@ -45,6 +45,8 @@ class _PlaylistsListView extends StatefulWidget {
 }
 
 class _PlaylistsListViewState extends State<_PlaylistsListView> {
+  /// This controller is needed in a wide screen
+  /// which has 2 [ListView] widgets side by side
   late ScrollController _scrollController;
 
   @override
