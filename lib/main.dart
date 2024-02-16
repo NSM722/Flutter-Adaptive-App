@@ -7,7 +7,8 @@ import 'package:provider/provider.dart';
 
 import 'src/app_state.dart';
 import 'src/playlist_details.dart';
-import 'src/playlists.dart';
+// import 'src/playlists.dart';
+import 'src/adaptive_playlists.dart';
 
 // From https://www.youtube.com/channel/UCwXdFgeE9KYzlDdR7TG9cMw
 const flutterDevAccountId = 'UCwXdFgeE9KYzlDdR7TG9cMw';
@@ -22,7 +23,7 @@ final _router = GoRouter(
     GoRoute(
       path: '/',
       builder: (context, state) {
-        return const Playlists();
+        return const AdaptivePlaylists();
       },
       routes: <RouteBase>[
         GoRoute(
@@ -30,9 +31,12 @@ final _router = GoRouter(
           builder: (context, state) {
             final title = state.uri.queryParameters['title']!;
             final id = state.pathParameters['id']!;
-            return PlaylistDetails(
-              playlistId: id,
-              playlistName: title,
+            return Scaffold(
+              appBar: AppBar(title: Text(title)),
+              body: PlaylistDetails(
+                playlistId: id,
+                playlistName: title,
+              ),
             );
           },
         ),
