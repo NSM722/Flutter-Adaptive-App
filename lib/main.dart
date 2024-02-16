@@ -71,7 +71,7 @@ class PlaylistsApp extends StatelessWidget {
         scheme: FlexScheme.red,
         useMaterial3: true,
       ).toTheme,
-      themeMode: ThemeMode.dark, // Or ThemeMode.System if you'd prefer
+      themeMode: ThemeMode.system, // Or ThemeMode.System if you'd prefer
       debugShowCheckedModeBanner: false,
       routerConfig: _router,
     );
