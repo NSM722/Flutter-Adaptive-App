@@ -11,7 +11,6 @@ class AuthedUserPlaylists extends ChangeNotifier {
     _loadPlaylists();
   }
 
-  // ignore: unnecessary_null_comparison
   bool get isLoggedIn => _api != null;
 
   Future<void> _loadPlaylists() async {
@@ -19,9 +18,9 @@ class AuthedUserPlaylists extends ChangeNotifier {
     _playlists.clear();
 
     do {
-      final response = await _api.playlists.list(
+      final response = await _api!.playlists.list(
         ['snippet', 'contentDetails', 'id'],
-        channelId: _flutterDevAccountId,
+        mine: true,
         maxResults: 50,
         pageToken: nextPageToken,
       );
