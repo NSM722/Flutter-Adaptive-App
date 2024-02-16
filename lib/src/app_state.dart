@@ -6,16 +6,8 @@ import 'package:googleapis/youtube/v3.dart';
 import 'package:http/http.dart' as http;
 
 class AuthedUserPlaylists extends ChangeNotifier {
-  AuthedUserPlaylists({
-    required String flutterDevAccountId,
-    required String youTubeApiKey,
-  }) : _flutterDevAccountId = flutterDevAccountId {
-    _api = YouTubeApi(
-      _ApiKeyClient(
-        client: http.Client(),
-        key: youTubeApiKey,
-      ),
-    );
+  set authClient(http.Client client) {
+    _api = YouTubeApi(client);
     _loadPlaylists();
   }
 
