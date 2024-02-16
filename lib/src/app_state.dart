@@ -1,32 +1,28 @@
-/// The app state object
 import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
 import 'package:googleapis/youtube/v3.dart';
 import 'package:http/http.dart' as http;
 
-class FlutterDevPlaylists extends ChangeNotifier {
-  FlutterDevPlaylists({
-    required String flutterDevAccountId,
-    required String youTubeApiKey,
-  }) : _flutterDevAccountId = flutterDevAccountId {
-    _api = YouTubeApi(
-      _ApiKeyClient(
-        client: http.Client(),
-        key: youTubeApiKey,
-      ),
-    );
+class AuthedUserPlaylists extends ChangeNotifier {
+  // Rename class
+  set authClient(http.Client client) {
+    // Drop constructor, add setter
+    _api = YouTubeApi(client);
     _loadPlaylists();
   }
+
+  bool get isLoggedIn => _api != null; // Add property
 
   Future<void> _loadPlaylists() async {
     String? nextPageToken;
     _playlists.clear();
 
     do {
-      final response = await _api.playlists.list(
+      final response = await _api!.playlists.list(
+        // Add ! to _api
         ['snippet', 'contentDetails', 'id'],
-        channelId: _flutterDevAccountId,
+        mine: true, // convert from channelId: to mine:
         maxResults: 50,
         pageToken: nextPageToken,
       );
@@ -39,8 +35,7 @@ class FlutterDevPlaylists extends ChangeNotifier {
     } while (nextPageToken != null);
   }
 
-  final String _flutterDevAccountId;
-  late final YouTubeApi _api;
+  YouTubeApi? _api; // Convert to optional
 
   final List<Playlist> _playlists = [];
   List<Playlist> get playlists => UnmodifiableListView(_playlists);
@@ -57,7 +52,8 @@ class FlutterDevPlaylists extends ChangeNotifier {
   Future<void> _retrievePlaylist(String playlistId) async {
     String? nextPageToken;
     do {
-      var response = await _api.playlistItems.list(
+      var response = await _api!.playlistItems.list(
+        // Add ! to _api
         ['snippet', 'contentDetails'],
         playlistId: playlistId,
         maxResults: 25,
@@ -73,19 +69,4 @@ class FlutterDevPlaylists extends ChangeNotifier {
   }
 }
 
-class _ApiKeyClient extends http.BaseClient {
-  _ApiKeyClient({required this.key, required this.client});
-
-  final String key;
-  final http.Client client;
-
-  @override
-  Future<http.StreamedResponse> send(http.BaseRequest request) {
-    final url = request.url.replace(queryParameters: <String, List<String>>{
-      ...request.url.queryParametersAll,
-      'key': [key]
-    });
-
-    return client.send(http.Request(request.method, url));
-  }
-}
+// Delete the now unused _ApiKeyClient class
