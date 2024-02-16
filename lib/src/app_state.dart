@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:googleapis/youtube/v3.dart';
 import 'package:http/http.dart' as http;
 
-class FlutterDevPlaylists extends ChangeNotifier {
-  FlutterDevPlaylists({
+class AuthedUserPlaylists extends ChangeNotifier {
+  AuthedUserPlaylists({
     required String flutterDevAccountId,
     required String youTubeApiKey,
   }) : _flutterDevAccountId = flutterDevAccountId {
